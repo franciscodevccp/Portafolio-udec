@@ -16,6 +16,29 @@ type CommentRow = {
   evaluaciones: { titulo: string; slug: string } | null;
 };
 
+const rel = { titulo: "", slug: "" };
+type Rel = typeof rel;
+
+function toCommentRow(
+  r: {
+    id: string;
+    autor: string;
+    contenido: string;
+    es_profesor: boolean;
+    evidencia_id: string | null;
+    evaluacion_id: string | null;
+    created_at: string;
+    evidencias: Rel | Rel[] | null;
+    evaluaciones: Rel | Rel[] | null;
+  }
+): CommentRow {
+  return {
+    ...r,
+    evidencias: Array.isArray(r.evidencias) ? r.evidencias[0] ?? null : r.evidencias,
+    evaluaciones: Array.isArray(r.evaluaciones) ? r.evaluaciones[0] ?? null : r.evaluaciones,
+  };
+}
+
 export default async function AdminComentariosPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -36,7 +59,7 @@ export default async function AdminComentariosPage() {
     `)
     .order("created_at", { ascending: false });
 
-  const list = (rows ?? []) as CommentRow[];
+  const list = (rows ?? []).map(toCommentRow);
 
   return (
     <div className={styles.wrap}>
