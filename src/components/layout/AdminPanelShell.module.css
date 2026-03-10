@@ -1,0 +1,94 @@
+.wrap {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.hamburger {
+  display: none;
+  position: fixed;
+  top: var(--space-md);
+  left: var(--space-md);
+  z-index: 102;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.hamburger:hover {
+  background: var(--color-bg-alt);
+}
+
+.hamburgerLine {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--color-text);
+  border-radius: 1px;
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 100;
+  pointer-events: auto;
+}
+
+.main {
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-lg);
+  overflow-x: auto;
+  overflow-y: auto;
+  background: var(--color-bg);
+}
+
+@media (max-width: 767px) {
+  .wrap {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  /* Cuando el menú está abierto, el botón queda detrás del sidebar para que no flote encima */
+  .wrap.menuOpen .hamburger {
+    z-index: 99;
+  }
+
+  .overlay {
+    display: block;
+  }
+
+  .main {
+    padding: calc(48px + var(--space-md)) var(--space-md) var(--space-md);
+    min-height: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .overlay {
+    display: none !important;
+  }
+}

@@ -1,0 +1,29 @@
+.wrap {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main {
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-lg);
+  overflow-x: auto;
+  overflow-y: auto;
+  background: var(--color-bg);
+}
+
+@media (max-width: 768px) {
+  .wrap {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .main {
+    padding: var(--space-md);
+    overflow: visible;
+    min-height: 0;
+  }
+}
