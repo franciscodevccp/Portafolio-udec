@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { formatDate } from "@/lib/utils";
+import EvidenciaRowActions from "./EvidenciaRowActions";
 import styles from "./page.module.css";
 
 export default async function AdminEvidenciasPage() {
@@ -44,6 +45,7 @@ export default async function AdminEvidenciasPage() {
                 <th className={styles.th}>Semana</th>
                 <th className={styles.th}>Fecha</th>
                 <th className={styles.th}>Estado</th>
+                <th className={styles.th}>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -61,6 +63,7 @@ export default async function AdminEvidenciasPage() {
                       {e.publicada ? "Publicada" : "Borrador"}
                     </span>
                   </td>
+                  <EvidenciaRowActions id={e.id} publicada={e.publicada} />
                 </tr>
               ))}
             </tbody>

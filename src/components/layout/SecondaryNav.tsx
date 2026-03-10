@@ -6,6 +6,7 @@ import styles from "./SecondaryNav.module.css";
 
 const LINKS = [
   { href: "/", label: "Inicio" },
+  { href: "/archivo", label: "Archivo" },
   { href: "/sobre-mi", label: "Sobre mí" },
   { href: "/introduccion", label: "Introducción" },
   { href: "/asignatura", label: "Asignatura" },

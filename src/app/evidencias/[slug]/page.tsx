@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { formatDate } from "@/lib/utils";
 import type { Evidencia, Medio, Comentario } from "@/types/database";
 import ComentariosSection from "@/components/public/ComentariosSection";
+import ImageCarousel from "@/components/public/ImageCarousel";
 import styles from "./page.module.css";
 
 export default async function EvidenciaDetailPage({
@@ -38,6 +39,8 @@ export default async function EvidenciaDetailPage({
 
   const medios = (mediosData ?? []) as Medio[];
   const comentariosForPage = (comentariosData ?? []) as Comentario[];
+  const imagenes = medios.filter((m) => m.tipo === "IMAGEN");
+  const otrosMedios = medios.filter((m) => m.tipo !== "IMAGEN");
 
   return (
     <article className={styles.article}>
@@ -54,6 +57,16 @@ export default async function EvidenciaDetailPage({
           </div>
         </div>
       </header>
+
+      {imagenes.length > 0 && (
+        <ImageCarousel
+          images={imagenes.map((m) => ({
+            id: m.id,
+            url: m.url,
+            descripcion: m.descripcion,
+          }))}
+        />
+      )}
 
       {e.antecedentes && (
         <section className={styles.section}>
@@ -81,11 +94,11 @@ export default async function EvidenciaDetailPage({
         <div className={styles.content}>{e.contenido}</div>
       </section>
 
-      {medios.length > 0 && (
+      {otrosMedios.length > 0 && (
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Medios</h2>
+          <h2 className={styles.sectionTitle}>Medios (videos, audio, enlaces)</h2>
           <div className={styles.medios}>
-            {medios.map((m) => (
+            {otrosMedios.map((m) => (
               <div key={m.id} className={styles.medio}>
                 {m.tipo === "IMAGEN" && (
                   <figure>

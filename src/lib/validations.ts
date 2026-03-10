@@ -4,7 +4,7 @@ export const evidenciaSchema = z.object({
   titulo: z.string().min(3, "El título debe tener al menos 3 caracteres"),
   semana: z.number().int().min(1).max(20),
   fecha: z.string(),
-  contenido: z.string().min(10, "El contenido es muy corto"),
+  contenido: z.string().min(10, "Contenido de la evidencia: debe tener al menos 10 caracteres"),
   antecedentes: z.string().optional(),
   objetivo: z.string().optional(),
   proposito: z.string().optional(),

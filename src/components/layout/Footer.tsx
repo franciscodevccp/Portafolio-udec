@@ -10,9 +10,14 @@ export default function Footer() {
         <p className={styles.copy}>
           © {year} ePortfolio — FAUG UdeC
         </p>
-        <Link href="/admin/login" className={styles.adminLink}>
-          Admin
-        </Link>
+        <span className={styles.links}>
+          <Link href="/archivo" className={styles.footerLink}>
+            Archivo
+          </Link>
+          <Link href="/admin/login" className={styles.adminLink}>
+            Admin
+          </Link>
+        </span>
       </div>
     </footer>
   );

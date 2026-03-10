@@ -17,6 +17,13 @@
   color: var(--color-text-secondary);
 }
 
+.hint {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+  margin: 0;
+}
+
 .textarea {
   width: 100%;
   padding: var(--space-md);

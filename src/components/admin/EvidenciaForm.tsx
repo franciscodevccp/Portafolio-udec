@@ -1,17 +1,19 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import toast from "react-hot-toast";
 import { evidenciaSchema } from "@/lib/validations";
-import { slugify, todayLocal } from "@/lib/utils";
+import { slugify, todayLocal, toDateInputValue } from "@/lib/utils";
 import type { TipoMedio } from "@/types/database";
+import type { Evidencia } from "@/types/database";
 import DatePicker from "@/components/ui/DatePicker";
 import styles from "./EvidenciaForm.module.css";
 
 const BUCKET = "eportfolio";
 const MAX_SIZE_MB = 5;
+const MAX_IMAGENES = 20;
 const ALLOWED_IMAGES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 const ALLOWED_VIDEOS = ["video/mp4", "video/webm"];
 const ALLOWED_AUDIO = ["audio/mpeg", "audio/wav"];
@@ -26,27 +28,46 @@ function getTipoMedio(mime: string): TipoMedio {
 
 interface Props {
   defaultSemana?: number;
+  evidencia?: Evidencia | null;
 }
 
-export default function EvidenciaForm({ defaultSemana = 1 }: Props) {
+export default function EvidenciaForm({ defaultSemana = 1, evidencia = null }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [archivos, setArchivos] = useState<File[]>([]);
   const [enlaces, setEnlaces] = useState<string[]>([]);
   const [nuevoEnlace, setNuevoEnlace] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState({
-    titulo: "",
-    semana: String(defaultSemana),
-    fecha: todayLocal(),
-    contenido: "",
-    antecedentes: "",
-    objetivo: "",
-    proposito: "",
-    reflexion: "",
-    otros: "",
-    publicada: false,
+    titulo: evidencia?.titulo ?? "",
+    semana: String(evidencia?.semana ?? defaultSemana),
+    fecha: evidencia ? toDateInputValue(evidencia.fecha) : todayLocal(),
+    contenido: evidencia?.contenido ?? "",
+    antecedentes: evidencia?.antecedentes ?? "",
+    objetivo: evidencia?.objetivo ?? "",
+    proposito: evidencia?.proposito ?? "",
+    reflexion: evidencia?.reflexion ?? "",
+    otros: evidencia?.otros ?? "",
+    publicada: evidencia?.publicada ?? false,
   });
+
+  useEffect(() => {
+    if (evidencia) {
+      setForm({
+        titulo: evidencia.titulo,
+        semana: String(evidencia.semana),
+        fecha: toDateInputValue(evidencia.fecha),
+        contenido: evidencia.contenido ?? "",
+        antecedentes: evidencia.antecedentes ?? "",
+        objetivo: evidencia.objetivo ?? "",
+        proposito: evidencia.proposito ?? "",
+        reflexion: evidencia.reflexion ?? "",
+        otros: evidencia.otros ?? "",
+        publicada: evidencia.publicada ?? false,
+      });
+    }
+  }, [evidencia]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
@@ -62,7 +83,17 @@ export default function EvidenciaForm({ defaultSemana = 1 }: Props) {
       }
       valid.push(file);
     }
-    setArchivos((prev) => [...prev, ...valid]);
+    const newImages = valid.filter((f) => ALLOWED_IMAGES.includes(f.type));
+    const newOthers = valid.filter((f) => !ALLOWED_IMAGES.includes(f.type));
+    setArchivos((prev) => {
+      const currentImages = prev.filter((f) => ALLOWED_IMAGES.includes(f.type));
+      const spaceLeft = Math.max(0, MAX_IMAGENES - currentImages.length);
+      const toAddImages = newImages.slice(0, spaceLeft);
+      if (newImages.length > spaceLeft) {
+        toast.error(`Máximo ${MAX_IMAGENES} imágenes. Se añaden ${toAddImages.length} de ${newImages.length}.`);
+      }
+      return [...prev, ...toAddImages, ...newOthers];
+    });
     e.target.value = "";
   }
 
@@ -104,41 +135,79 @@ export default function EvidenciaForm({ defaultSemana = 1 }: Props) {
     };
     const result = evidenciaSchema.safeParse(data);
     if (!result.success) {
-      const first = result.error.flatten().fieldErrors;
-      const msg = Object.values(first).flat().join(" ") || "Revisa los campos";
+      const flat = result.error.flatten().fieldErrors;
+      const errors: Record<string, string> = {};
+      for (const [key, messages] of Object.entries(flat)) {
+        const text = Array.isArray(messages) ? messages[0] : messages;
+        if (text) errors[key] = text;
+      }
+      setFieldErrors(errors);
+      const msg = Object.values(errors).join(" ");
       toast.error(msg);
       return;
     }
+    setFieldErrors({});
     setLoading(true);
     const supabase = createClient();
-    const slug = `${slugify(result.data.titulo)}-${Date.now()}`;
     const fechaIso = `${result.data.fecha}T12:00:00.000Z`;
+    let evidenciaId: string;
 
-    const { data: evidenciaCreada, error } = await supabase
-      .from("evidencias")
-      .insert({
-        titulo: result.data.titulo,
-        slug,
-        semana: result.data.semana,
-        fecha: fechaIso,
-        contenido: result.data.contenido,
-        antecedentes: result.data.antecedentes || null,
-        objetivo: result.data.objetivo || null,
-        proposito: result.data.proposito || null,
-        reflexion: result.data.reflexion || null,
-        otros: result.data.otros || null,
-        publicada: result.data.publicada,
-      })
-      .select("id")
-      .single();
+    if (evidencia?.id) {
+      evidenciaId = evidencia.id;
+      const { error } = await supabase
+        .from("evidencias")
+        .update({
+          titulo: result.data.titulo,
+          semana: result.data.semana,
+          fecha: fechaIso,
+          contenido: result.data.contenido,
+          antecedentes: result.data.antecedentes || null,
+          objetivo: result.data.objetivo || null,
+          proposito: result.data.proposito || null,
+          reflexion: result.data.reflexion || null,
+          otros: result.data.otros || null,
+          publicada: result.data.publicada,
+        })
+        .eq("id", evidenciaId);
 
-    if (error) {
-      setLoading(false);
-      toast.error(error.message);
-      return;
+      if (error) {
+        setLoading(false);
+        toast.error(error.message);
+        return;
+      }
+    } else {
+      const slug = `${slugify(result.data.titulo)}-${Date.now()}`;
+      const { data: evidenciaCreada, error } = await supabase
+        .from("evidencias")
+        .insert({
+          titulo: result.data.titulo,
+          slug,
+          semana: result.data.semana,
+          fecha: fechaIso,
+          contenido: result.data.contenido,
+          antecedentes: result.data.antecedentes || null,
+          objetivo: result.data.objetivo || null,
+          proposito: result.data.proposito || null,
+          reflexion: result.data.reflexion || null,
+          otros: result.data.otros || null,
+          publicada: result.data.publicada,
+        })
+        .select("id")
+        .single();
+
+      if (error) {
+        setLoading(false);
+        toast.error(error.message);
+        return;
+      }
+      if (!evidenciaCreada) {
+        setLoading(false);
+        toast.error("Error al crear");
+        return;
+      }
+      evidenciaId = evidenciaCreada.id;
     }
 
-    const evidenciaId = evidenciaCreada.id;
     let mediosOk = 0;
     for (let i = 0; i < archivos.length; i++) {
       const file = archivos[i];
@@ -176,10 +245,18 @@ export default function EvidenciaForm({ defaultSemana = 1 }: Props) {
 
     setLoading(false);
     const totalMedios = mediosOk + enlaces.length;
-    if (totalMedios > 0) {
-      toast.success(`Evidencia creada con ${totalMedios} medio(s).`);
+    if (evidencia) {
+      if (totalMedios > 0) {
+        toast.success(`Evidencia actualizada. ${totalMedios} medio(s) añadido(s).`);
+      } else {
+        toast.success("Evidencia actualizada");
+      }
     } else {
-      toast.success("Evidencia creada");
+      if (totalMedios > 0) {
+        toast.success(`Evidencia creada con ${totalMedios} medio(s).`);
+      } else {
+        toast.success("Evidencia creada");
+      }
     }
     router.push("/admin/evidencias");
   }
@@ -190,14 +267,23 @@ export default function EvidenciaForm({ defaultSemana = 1 }: Props) {
         <label htmlFor="titulo" className={styles.label}>
           Título
         </label>
+        {fieldErrors.titulo && (
+          <p className={styles.fieldError} role="alert">
+            {fieldErrors.titulo}
+          </p>
+        )}
         <input
           id="titulo"
           type="text"
           value={form.titulo}
-          onChange={(e) => setForm((f) => ({ ...f, titulo: e.target.value }))}
-          className={styles.input}
+          onChange={(e) => {
+            setForm((f) => ({ ...f, titulo: e.target.value }));
+            if (fieldErrors.titulo) setFieldErrors((err) => { const next = { ...err }; delete next.titulo; return next; });
+          }}
+          className={fieldErrors.titulo ? styles.inputError : styles.input}
           required
           disabled={loading}
+          aria-invalid={!!fieldErrors.titulo}
         />
       </div>
       <div className={styles.row}>
@@ -234,16 +320,23 @@ export default function EvidenciaForm({ defaultSemana = 1 }: Props) {
         <label htmlFor="contenido" className={styles.label}>
           Contenido de la evidencia
         </label>
+        {fieldErrors.contenido && (
+          <p className={styles.fieldError} role="alert">
+            {fieldErrors.contenido}
+          </p>
+        )}
         <textarea
           id="contenido"
           value={form.contenido}
-          onChange={(e) =>
-            setForm((f) => ({ ...f, contenido: e.target.value }))
-          }
-          className={styles.textarea}
+          onChange={(e) => {
+            setForm((f) => ({ ...f, contenido: e.target.value }));
+            if (fieldErrors.contenido) setFieldErrors((err) => { const next = { ...err }; delete next.contenido; return next; });
+          }}
+          className={fieldErrors.contenido ? styles.textareaError : styles.textarea}
           rows={6}
           required
           disabled={loading}
+          aria-invalid={!!fieldErrors.contenido}
         />
       </div>
       <div className={styles.field}>
@@ -328,7 +421,10 @@ export default function EvidenciaForm({ defaultSemana = 1 }: Props) {
         />
       </div>
       <div className={styles.field}>
-        <label className={styles.label}>Evidencias: imágenes, videos, audio (opcional)</label>
+        <label className={styles.label}>Imágenes (carrusel en la evidencia)</label>
+        <p className={styles.hint}>
+          Hasta {MAX_IMAGENES} imágenes. Se mostrarán primero en un carrusel. Opcional: video y audio.
+        </p>
         <div className={styles.fileWrap}>
           <input
             ref={fileInputRef}
@@ -345,25 +441,63 @@ export default function EvidenciaForm({ defaultSemana = 1 }: Props) {
           </label>
           <span className={styles.fileName}>
             {archivos.length === 0
-              ? "Imágenes, video, audio (JPG, PNG, GIF, WebP, MP4, WebM, MP3, WAV) · máx. 5 MB"
-              : `${archivos.length} archivo(s) seleccionado(s)`}
+              ? `Hasta ${MAX_IMAGENES} imágenes + video/audio (JPG, PNG, GIF, WebP, MP4, WebM, MP3, WAV) · máx. ${MAX_SIZE_MB} MB`
+              : `${archivos.filter((f) => ALLOWED_IMAGES.includes(f.type)).length} imagen(es), ${archivos.filter((f) => !ALLOWED_IMAGES.includes(f.type)).length} otro(s)`}
           </span>
         </div>
-        {archivos.length > 0 && (
+        {archivos.some((f) => ALLOWED_IMAGES.includes(f.type)) && (
+          <div className={styles.previewCarouselWrap}>
+            <p className={styles.previewLabel}>Vista previa (carrusel)</p>
+            <div className={styles.previewCarousel}>
+              {archivos
+                .filter((f) => ALLOWED_IMAGES.includes(f.type))
+                .map((file, index) => (
+                  <div key={`${file.name}-${index}`} className={styles.previewSlide}>
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt={file.name}
+                      className={styles.previewImg}
+                    />
+                    <div className={styles.previewMeta}>
+                      <span className={styles.previewNombre}>{file.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const idx = archivos.indexOf(file);
+                          if (idx !== -1) quitarArchivo(idx);
+                        }}
+                        className={styles.quitarArchivo}
+                        disabled={loading}
+                      >
+                        Quitar
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+        {archivos.filter((f) => !ALLOWED_IMAGES.includes(f.type)).length > 0 && (
           <ul className={styles.listaArchivos}>
-            {archivos.map((file, index) => (
-              <li key={`${file.name}-${index}`} className={styles.archivoItem}>
-                <span className={styles.archivoNombre}>{file.name}</span>
-                <button
-                  type="button"
-                  onClick={() => quitarArchivo(index)}
-                  className={styles.quitarArchivo}
-                  disabled={loading}
-                >
-                  Quitar
-                </button>
-              </li>
-            ))}
+            <span className={styles.archivoOtrosLabel}>Videos / audio:</span>
+            {archivos
+              .filter((f) => !ALLOWED_IMAGES.includes(f.type))
+              .map((file, index) => {
+                const globalIndex = archivos.indexOf(file);
+                return (
+                  <li key={`${file.name}-${globalIndex}`} className={styles.archivoItem}>
+                    <span className={styles.archivoNombre}>{file.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => quitarArchivo(globalIndex)}
+                      className={styles.quitarArchivo}
+                      disabled={loading}
+                    >
+                      Quitar
+                    </button>
+                  </li>
+                );
+              })}
           </ul>
         )}
       </div>
@@ -415,7 +549,7 @@ export default function EvidenciaForm({ defaultSemana = 1 }: Props) {
       </div>
       <div className={styles.actions}>
         <button type="submit" className={styles.submit} disabled={loading}>
-          {loading ? "Guardando…" : "Crear evidencia"}
+          {loading ? "Guardando…" : evidencia ? "Guardar cambios" : "Crear evidencia"}
         </button>
         <button
           type="button"

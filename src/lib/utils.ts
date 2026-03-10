@@ -15,6 +15,11 @@ export function todayLocal(): string {
   return format(new Date(), "yyyy-MM-dd");
 }
 
+/** ISO o Date a YYYY-MM-DD para input date */
+export function toDateInputValue(date: Date | string): string {
+  return format(new Date(date), "yyyy-MM-dd");
+}
+
 export function timeAgo(date: Date | string): string {
   return formatDistanceToNow(new Date(date), { addSuffix: true, locale: es });
 }

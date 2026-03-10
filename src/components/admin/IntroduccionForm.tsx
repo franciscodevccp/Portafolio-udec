@@ -98,8 +98,11 @@ export default function IntroduccionForm({ introduccion }: Props) {
       </div>
       <div className={styles.field}>
         <label htmlFor="objetivos" className={styles.label}>
-          Objetivos
+          Objetivos del eportfolio (propósitos de aprendizaje)
         </label>
+        <p className={styles.hint}>
+          Incluya planificación, gestión del tiempo y estrategias de estudio con los que espera alcanzar los propósitos (requisito del taller).
+        </p>
         <textarea
           id="objetivos"
           value={form.objetivos}

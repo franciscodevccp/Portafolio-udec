@@ -1,129 +1,133 @@
-# Estructura ePortfolio (según profesor) — Estado actual
+# Estructura ePortfolio — Requisitos oficiales y estado
 
-Este documento relaciona la estructura pedida por el profesor con lo implementado en el proyecto.
-
----
-
-## 1. Identificación del autor
-
-| Pedido por el profesor | En el proyecto | Estado |
-|------------------------|----------------|--------|
-| Nombre, nivel de formación, edad, otro | `perfiles`: nombre, nivel_formacion, edad | ✅ Implementado |
-| Intereses y gustos | `perfiles`: intereses, gustos | ✅ Implementado |
-| Otros datos relevantes para el autor | `perfiles`: datos_relevantes | ✅ Implementado |
-| Foto del autor | `perfiles`: foto_url (subida de imagen) | ✅ Implementado |
-
-**Admin:** **Mi Perfil** — formulario completo con todos los campos y subida de foto.
+Este documento recoge los requisitos oficiales del taller y cómo se cubren en el proyecto.
 
 ---
 
-## 2. Introducción (sentido otorgado al portfolio)
+## Requisitos oficiales (Para el trabajo con ePortfolio)
 
-| Pedido por el profesor | En el proyecto | Estado |
-|------------------------|----------------|--------|
-| Sentido otorgado al portfolio | `introducciones`: sentido_portfolio | ✅ Implementado |
-| Objetivos del eportfolio (para el autor) | `introducciones`: objetivos | ✅ Implementado |
-| Experiencias previas de aprendizaje (otros cursos y niveles) | `introducciones`: experiencias_previas | ✅ Implementado |
-| Expectativas (objetivos de aprendizaje con el eportfolio) | `introducciones`: expectativas | ✅ Implementado |
+El ePortfolio consiste en un **registro personal del proceso de avance** desarrollado en el taller, con evidencias digitales que permitan visualizar el aprendizaje y un soporte para la **revisión y reflexión** en torno a la propia construcción de aprendizaje en arquitectura y su autorregulación.
 
-**Admin:** **Introducción** — formulario completo.
+El ePortfolio se desarrolla en base a **blog**, de acuerdo con la estructura propuesta en la plataforma CANVAS.
 
----
+### Creación del ePortfolio
 
-## 3. Información asignatura(s) involucrada(s)
+- **a)** Crear el ePortfolio dentro de la **primera semana de clases** (09 al 13 marzo 2026).
+- **b)** Enviar la **dirección del blog** al profesor Miguel Roco (**mroco@udec.cl**), quien dispondrá en CANVAS los enlaces hacia el ePortfolio de cada estudiante.
 
-| Pedido por el profesor | En el proyecto | Estado |
-|------------------------|----------------|--------|
-| Programa | `asignaturas`: programa | ✅ Implementado |
-| Planificación | `asignaturas`: planificacion | ✅ Implementado |
-| Normas para su desarrollo | `asignaturas`: normas | ✅ Implementado |
-| Otros | `asignaturas`: otros | ✅ Implementado |
-| Archivo (ej. PDF del programa) | `asignaturas`: archivo_url (subida de archivo) | ✅ Implementado |
+### Desarrollo del ePortfolio (7 puntos)
 
-**Admin:** **Asignatura** — formulario completo + subida de PDF.
+| # | Requisito | En el proyecto |
+|---|-----------|----------------|
+| **1** | Establecer los **propósitos de aprendizaje** para el semestre (personales): planificación, gestión del tiempo y estrategias de estudio para alcanzar los propósitos comprometidos. | **Introducción** (sentido, objetivos, expectativas). Incluir ahí planificación y estrategias. |
+| **2** | Al menos **una entrada por semana** del período de clases (**mínimo 17 entradas**). | **Evidencias** por semana y fecha. Objetivo: ≥17 entradas publicadas. |
+| **3** | El blog debe disponer **visible el “archivo del blog” y las fechas** para cada entrada. | Página **Archivo** (`/archivo`) con entradas agrupadas por mes y fecha visible. |
+| **4** | Registrar **evidencias de aprendizaje** (proceso y evaluaciones): imágenes, enlaces, vídeos, presentaciones online, audio, etc. | **Evidencias** con contenido + **medios** (IMAGEN, VIDEO, AUDIO, LINK, etc.). |
+| **5** | Acompañar las evidencias con **reflexiones, ideas y comentarios personales** que expliquen los aprendizajes logrados. | Campo **reflexión** en cada evidencia + sección **Reflexiones**. |
+| **6** | Desarrollar **retroalimentación** en ePortfolios de otros miembros del taller: **al menos 10 registros por etapa de evaluación**, en distintos ePortfolios. | Actividad externa (comentar en otros blogs). No se registra en esta app; cumplimiento personal. |
+| **7** | Al menos **una reflexión integral** al final de cada ejercicio, y **una reflexión final** de todo el proceso al finalizar el semestre. | **Reflexiones** con tipos: por ejercicio (PROYECTO, EVALUACION, PORTFOLIO) y **FINAL**. |
 
----
+### Criterios importantes
 
-## 4. Mis evidencias (archivos y trabajos ordenados cronológicamente, registros semanales)
-
-| Pedido por el profesor | En el proyecto | Estado |
-|------------------------|----------------|--------|
-| Orden cronológico, registros semanales | `evidencias`: semana, fecha; listado ordenado por fecha | ✅ Implementado |
-| Evidencias: imágenes, textos, videos, audio, links, páginas web, redes sociales, etc. | `evidencias.contenido` (texto) + tabla `medios` (IMAGEN, VIDEO, AUDIO, LINK, etc.) | ✅ Implementado |
-| Antecedentes sobre cada evidencia incorporada | `evidencias`: antecedentes | ✅ Implementado |
-| Objetivo de las evidencias (por qué es importante, propósito, por qué se muestra) | `evidencias`: objetivo, proposito | ✅ Implementado |
-| Comentarios sobre las evidencias (alumnos/profesores) | Tabla `comentarios` (evidencia_id, autor, contenido, es_profesor) | ✅ En BD; falta UI para ver/añadir en público y admin |
-| Reflexión sobre las evidencias | `evidencias`: reflexion | ✅ Implementado |
-| Otros de interés del autor | `evidencias`: otros | ✅ Implementado |
-
-**Admin:** **Evidencias** — listado + **Nueva evidencia** con: título, semana, fecha, contenido, antecedentes, objetivo, propósito, reflexión, otros, subida de imágenes/videos/audio, enlaces (URLs), y publicación.
-
-**Pendiente (opcional):** Página/vista para ver y gestionar comentarios por evidencia (y por evaluación).
+- El ePortfolio se valora por la **coherencia entre los objetivos de aprendizaje planteados y su logro** a través del trabajo en el taller.
+- Se lleva un **registro de la trayectoria** de cada alumno en relación con el desarrollo del taller.
+- El ePortfolio es el **medio de verificación** del logro de los objetivos de aprendizaje.
+- Los **comentarios y observaciones del profesor** respecto del seguimiento se disponen **directamente en el ePortfolio** del estudiante (comentarios en evidencias/evaluaciones).
 
 ---
 
-## 5. Evaluación (en base a las evidencias mostradas)
+## Estado actual del proyecto (detalle por bloque)
 
-| Pedido por el profesor | En el proyecto | Estado |
-|------------------------|----------------|--------|
-| Antecedentes de la evaluación | `evaluaciones`: antecedentes | ✅ En BD |
-| Criterios | `evaluaciones`: criterios | ✅ En BD |
-| Escalas | `evaluaciones`: escalas | ✅ En BD |
-| Metodología | `evaluaciones`: metodologia | ✅ En BD |
-| Comentario de las evaluaciones (alumnos/profesores) | Tabla `comentarios` (evaluacion_id) | ✅ En BD |
-| Indicación de las calificaciones obtenidas | `evaluaciones`: calificacion | ✅ En BD |
-| Reflexión sobre la evaluación recibida | `evaluaciones`: reflexion | ✅ En BD |
-| Otros de interés del autor | `evaluaciones`: otros | ✅ En BD |
+### 1. Identificación del autor (Sobre mí)
 
-**Admin:** **Evaluaciones** — solo placeholder (listado y “Nueva evaluación” aún sin implementar).
+| Requisito | En el proyecto | Estado |
+|-----------|----------------|--------|
+| Nombre, nivel de formación, edad, otro | `perfiles`: nombre, nivel_formacion, edad | ✅ |
+| Intereses y gustos | `perfiles`: intereses, gustos | ✅ |
+| Otros datos relevantes | `perfiles`: datos_relevantes | ✅ |
+| Foto del autor | `perfiles`: foto_url | ✅ |
 
-**Pendiente:** Listado de evaluaciones + formulario Nueva evaluación (y, si se desea, vista pública de evaluaciones).
+**Admin:** Mi Perfil — formulario completo.
 
 ---
 
-## 6. Reflexiones sobre mi proceso de aprendizaje (propias/externas)
+### 2. Introducción (propósitos y sentido)
 
-| Pedido por el profesor | En el proyecto | Estado |
-|------------------------|----------------|--------|
-| Sobre mis proyectos | `reflexiones` con tipo PROYECTO | ✅ En BD |
-| Sobre mis evaluaciones | `reflexiones` con tipo EVALUACION | ✅ En BD |
-| Sobre mi portfolio | `reflexiones` con tipo PORTFOLIO | ✅ En BD |
-| (y reflexión final) | `reflexiones` con tipo FINAL | ✅ En BD |
+| Requisito | En el proyecto | Estado |
+|-----------|----------------|--------|
+| Sentido del portfolio | `introducciones`: sentido_portfolio | ✅ |
+| Objetivos del eportfolio | `introducciones`: objetivos | ✅ |
+| Experiencias previas | `introducciones`: experiencias_previas | ✅ |
+| Expectativas | `introducciones`: expectativas | ✅ |
 
-**Admin:** **Reflexiones** — solo placeholder (listado y “Nueva reflexión” aún sin implementar).
-
-**Pendiente:** Listado de reflexiones + formulario Nueva reflexión (título, contenido, tipo, fecha, publicada) y vista pública.
+**Admin:** Introducción. **Recomendación:** redactar aquí también planificación, gestión del tiempo y estrategias de estudio (requisito 1).
 
 ---
 
-## 7. Comentarios (alumnos/profesores)
+### 3. Asignatura
 
-- **Sobre evidencias:** tabla `comentarios` con `evidencia_id`. Backend listo; falta pantalla para ver y, si aplica, añadir/moderar.
-- **Sobre evaluaciones:** tabla `comentarios` con `evaluacion_id`. Mismo caso.
+| Requisito | En el proyecto | Estado |
+|-----------|----------------|--------|
+| Programa, planificación, normas, otros | `asignaturas` | ✅ |
+| Archivo PDF del programa | `asignaturas`: archivo_url | ✅ |
 
-**Admin:** **Comentarios** — solo placeholder (“Próximamente”).
-
-**Pendiente:** Listado de comentarios (por evidencia/evaluación), moderación y, en sitio público, formulario para que alumnos/profesores dejen comentarios (si el profesor lo pide).
+**Admin:** Asignatura.
 
 ---
 
-## Resumen
+### 4. Evidencias (entradas semanales, mínimo 17)
 
-| Bloque | Base de datos | Admin (formularios/listados) | Público |
-|--------|----------------|------------------------------|---------|
-| **Identificación del autor** | ✅ | ✅ Mi Perfil | Pendiente usar datos en “Sobre mí” |
-| **Introducción** | ✅ | ✅ Introducción | Pendiente mostrar en /introduccion |
-| **Asignatura(s)** | ✅ | ✅ Asignatura | Pendiente mostrar en /asignatura |
-| **Mis evidencias** | ✅ | ✅ Listado + Nueva evidencia | Parcial: home con últimas; falta /evidencias y ficha por evidencia |
-| **Evaluación** | ✅ | ⏳ Placeholder | Pendiente |
-| **Reflexiones** | ✅ | ⏳ Placeholder | Pendiente |
-| **Comentarios** | ✅ | ⏳ Placeholder | Pendiente |
+| Requisito | En el proyecto | Estado |
+|-----------|----------------|--------|
+| Una entrada por semana, fechas visibles | `evidencias`: semana, fecha; listado y Archivo | ✅ |
+| Imágenes, vídeos, audio, enlaces, etc. | `evidencias.contenido` + tabla `medios` | ✅ |
+| Antecedentes, objetivo, propósito | `evidencias`: antecedentes, objetivo, proposito | ✅ |
+| Reflexión sobre cada evidencia | `evidencias`: reflexion | ✅ |
+| Comentarios (profesor/otros) | Tabla `comentarios` (evidencia_id) | ✅ |
 
-**Prioridad sugerida para cerrar la estructura del profesor:**
+**Admin:** Evidencias — listado + Nueva evidencia. **Público:** listado en home y en Archivo; detalle por evidencia con comentarios.
 
-1. **Evaluaciones:** listado + formulario “Nueva evaluación” en admin (y opcionalmente vista pública).
-2. **Reflexiones:** listado + formulario “Nueva reflexión” en admin (y vista pública por tipo).
-3. **Comentarios:** listado/moderación en admin y, si se requiere, formulario de comentarios en público.
-4. **Páginas públicas:** completar sobre-mi, introduccion, asignatura, evidencias (listado + detalle), evaluacion, reflexiones usando los datos de Supabase.
+---
 
-Si indicas por qué bloque quieres seguir (por ejemplo “Evaluaciones” o “páginas públicas”), se puede bajar esto a tareas concretas de código paso a paso.
+### 5. Evaluación
+
+| Requisito | En el proyecto | Estado |
+|-----------|----------------|--------|
+| Criterios, escalas, metodología, calificación | `evaluaciones` | ✅ |
+| Reflexión y comentarios | `evaluaciones`: reflexion; `comentarios` (evaluacion_id) | ✅ |
+
+**Admin:** Evaluaciones. **Público:** listado y ficha por evaluación.
+
+---
+
+### 6. Reflexiones
+
+| Requisito | En el proyecto | Estado |
+|-----------|----------------|--------|
+| Reflexión por ejercicio / integral | `reflexiones` tipo PROYECTO, EVALUACION, PORTFOLIO | ✅ |
+| Reflexión final del semestre | `reflexiones` tipo FINAL | ✅ |
+
+**Admin:** Reflexiones. **Público:** listado por tipo en home y en /reflexiones.
+
+---
+
+### 7. Archivo del blog y fechas
+
+- **Página Archivo** (`/archivo`): entradas (evidencias) agrupadas por mes con **fecha visible** en cada entrada. Enlace en la navegación pública.
+
+---
+
+## Resumen de cobertura
+
+| Bloque | BD | Admin | Público |
+|--------|-----|-------|--------|
+| Identificación (Sobre mí) | ✅ | ✅ | ✅ (en home) |
+| Introducción (propósitos) | ✅ | ✅ | ✅ (en home) |
+| Asignatura | ✅ | ✅ | ✅ (en home) |
+| Evidencias (≥17 entradas) | ✅ | ✅ | ✅ + Archivo |
+| Evaluación | ✅ | ✅ | ✅ (en home) |
+| Reflexiones | ✅ | ✅ | ✅ (en home) |
+| Archivo y fechas | — | — | ✅ /archivo |
+| Comentarios (profesor en tu ePortfolio) | ✅ | ✅ Comentarios | ✅ en evidencias/evaluaciones |
+
+**Requisito 6 (10 comentarios en otros ePortfolios):** se cumple fuera de esta aplicación, comentando en los blogs de otros estudiantes.

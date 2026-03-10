@@ -20,13 +20,22 @@
   color: var(--color-text-muted);
 }
 
+.links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.footerLink,
 .adminLink {
   font-size: 0.9375rem;
   font-weight: 500;
   color: var(--color-text-secondary);
+  text-decoration: none;
   transition: color var(--duration-fast) var(--ease-out);
 }
 
+.footerLink:hover,
 .adminLink:hover {
   color: var(--color-highlight);
 }

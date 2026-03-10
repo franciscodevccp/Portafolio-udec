@@ -15,10 +15,12 @@ export default async function EvidenciasPage() {
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.sectionTitle}>Evidencias</h1>
-      <p className={styles.sectionDesc}>
-        Entradas semanales del portfolio. Haz clic en una para ver el detalle y dejar comentarios.
-      </p>
+      <header className={styles.listPageHeader}>
+        <h1 className={styles.sectionTitle}>Evidencias</h1>
+        <p className={styles.sectionDesc}>
+          Entradas semanales del portfolio. Haz clic en una para ver el detalle y dejar comentarios.
+        </p>
+      </header>
 
       {list.length === 0 ? (
         <div className={styles.empty}>

@@ -14,10 +14,12 @@ export default async function EvaluacionListPage() {
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.sectionTitle}>Evaluación</h1>
-      <p className={styles.sectionDesc}>
-        Criterios, escalas, metodología y calificaciones en base a las evidencias mostradas.
-      </p>
+      <header className={styles.listPageHeader}>
+        <h1 className={styles.sectionTitle}>Evaluación</h1>
+        <p className={styles.sectionDesc}>
+          Criterios, escalas, metodología y calificaciones en base a las evidencias mostradas.
+        </p>
+      </header>
 
       {list.length === 0 ? (
         <div className={styles.empty}>
